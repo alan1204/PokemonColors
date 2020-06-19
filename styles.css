@@ -43,7 +43,7 @@ body:hover {
   background-color: var(--tertiary);
 }
 
-button {
+input {
   padding: 1em 2em;
   font-size: 20px;
   border: none;
@@ -53,4 +53,9 @@ button {
   --bezel-color: var(--primary);
   -webkit-mask: paint(bezel, filled);
   background-image: paint(bezel, stroke);
+}
+
+canvas {
+  display: block;
+  margin: 0 auto;
 }
