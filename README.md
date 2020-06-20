@@ -2,6 +2,8 @@
 
 Paleta de colores con Pokemon (Aprendiendo JavaScript)
 
+Live example -> https://alan1204.github.io/PokemonColors/
+
 Proyecto creado siguiendo las clases en YouTube de Leónidas Esteban (https://www.youtube.com/user/LeonidasEsteban/featured)
 
 Clase 1: transiciones y propiedades
