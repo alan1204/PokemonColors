@@ -44,7 +44,7 @@ class Draw {
         const green = imgData[offset + 1];
         const blue = imgData[offset + 2];
         colors.push({ red, green, blue });
-        console.log("%c color", `background: rgba(${red}, ${green}, ${blue})`);
+        //console.log("%c color", `background: rgba(${red}, ${green}, ${blue})`);
       }
     }
     return colors;
