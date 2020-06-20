@@ -26,7 +26,9 @@ async function handleSubmit(event) {
   const id = data.get("id");
   const pokemon = await getPokemon(id);
   console.log(pokemon);
-  renderPokemon(pokemon);
+  const pokemonDrawed = await renderPokemon(pokemon);
+  const colors = draw.colorPalette(90);
+  updateProperties(colors);
 }
 
 async function getPokemon(id) {
@@ -35,21 +37,80 @@ async function getPokemon(id) {
   return pokemon;
 }
 
-const ctx = canvas.getContext("2d");
+/*const ctx = canvas.getContext("2d");
 const image = new Image();
-image.setAttribute("crossOrigin", "anonymus");
+image.setAttribute("crossOrigin", "anonymus");*/
 
-function renderPokemon(pokemon) {
-  image.setAttribute("src", pokemon.sprites.front_default);
+class Draw {
+  constructor(canvasEl) {
+    this.canvas = canvasEl;
+    this.ctx = this.canvas.getContext("2d");
+    this.image = new Image();
+    this.image.setAttribute("crossOrigin", "anonymous");
+  }
+  render(url) {
+    this.image.setAttribute("src", url);
+    this.ctx.font = "20px sans-serif";
+    this.ctx.textBaseline = "top";
+    this.ctx.fillText("Loading...", 0, 0, canvas.width);
+    return new Promise((resolve, reject) => {
+      this.image.addEventListener("load", () => {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.drawImage(
+          this.image,
+          0,
+          0,
+          this.canvas.width,
+          this.canvas.height
+        );
+        resolve("listo para obtener colores");
+        //const colors = this.colorPalette();
+        //updateProperties(colors);
+      });
+    });
+  }
+  colorPalette(quality = 90) {
+    const imgData = this.ctx.getImageData(
+      0,
+      0,
+      this.canvas.width,
+      this.canvas.height
+    ).data;
+    const colors = [];
+    for (
+      let i = 0;
+      i < this.canvas.width * this.canvas.height;
+      i = i + quality
+    ) {
+      const offset = i * 4;
+      const alpha = imgData[offset + 3];
+      if (alpha > 0) {
+        const red = imgData[offset];
+        const green = imgData[offset + 1];
+        const blue = imgData[offset + 2];
+        colors.push({ red, green, blue });
+        //console.log("%c color", `background: rgba(${red}, ${green}, ${blue})`);
+      }
+    }
+    return colors;
+  }
+}
+
+const draw = new Draw(canvas);
+
+async function renderPokemon(pokemon) {
+  await draw.render(pokemon.sprites.front_default);
+  return draw;
+  /*image.setAttribute("src", pokemon.sprites.front_default);
   image.addEventListener("load", () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
     const colors = getColorPalette(ctx);
     updateProperties(colors);
-  });
+  });*/
 }
 
-function getColorPalette(ctx) {
+/*function getColorPalette(ctx) {
   const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
   const quality = 90;
   const colors = [];
@@ -65,11 +126,7 @@ function getColorPalette(ctx) {
     }
   }
   return colors;
-}
-
-/*button.addEventListener("click", () => {
-  updateProperties(["#71bfb1", "#5fa195", "#c55d00"]);
-});*/
+}*/
 
 function updateProperties(colors) {
   document.body.style.setProperty(
